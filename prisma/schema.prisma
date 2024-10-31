@@ -1,0 +1,37 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model PatientUser {
+  id              Int       @id @default(autoincrement())
+  user_log_type   String    // "normal" or "clerk"
+  email           String    @unique
+  phone_no        String?
+  name            String
+  national_id     String    @unique
+  province        String
+  district        String
+  password_hash   String
+  is_email_verified Boolean @default(false)
+  is_verified     Boolean   @default(false)
+  created_at      DateTime  @default(now())
+  profile         PatientUserProfile?
+}
+
+model PatientUserProfile {
+  id             Int      @id @default(autoincrement())
+  user_id        Int      @unique
+  address        String?
+  subdistrict    String?
+  district       String?
+  town           String?
+  province       String?
+  postal_code    String?
+  bpjs_no        String?   @unique
+  user           PatientUser @relation(fields: [user_id], references: [id])
+}
